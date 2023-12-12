@@ -163,6 +163,7 @@ def set_hdri(params_rendering, working_dir):
         params_rendering['hdri_offset'])
     env_node = nt.nodes.new("ShaderNodeTexEnvironment")
     env_node.image = bpy.data.images.load(params_rendering['use_hdri'])
+    nt.nodes['Background'].inputs['Strength'].default_value = 0.5
     back_node = nt.nodes['Background']
     nt.links.new(input_node.outputs[0], mapping_node.inputs[0])
     nt.links.new(mapping_node.outputs[0], env_node.inputs[0])
@@ -420,7 +421,6 @@ def set_material(idx, params_current_shader, current_object, working_dir):
             pbs_node.inputs[key.title().replace(
                 '_', ' ')].default_value = RGB_data
 
-
     # set texture:
     for key, value in params_current_shader.items():
         if key.lower() in ["load_uv"] and str2bool(value) and bpy.data.objects[current_object].type == 'MESH':
@@ -506,10 +506,16 @@ def set_texture_mapping(idx, key, value, working_dir, uv_flag):
         amp_node.inputs[1].default_value = 1
     mat.node_tree.links.new(coordinate_node.outputs[0], texture_node.inputs[0])
     mat.node_tree.links.new(texture_node.outputs[0], amp_node.inputs[0])
-    if key.lower() == "color_texture": socket = 0
-    if key.lower() == "metallic_texture": socket = 4
-    if key.lower() == "specular_texture": socket = 5
-    if key.lower() == "roughness_texture": 
+    if key.lower() == "color_texture":
+        socket = 0
+        print("已经找到color贴图，路径：" + str(value))
+    if key.lower() == "metallic_texture":
+        socket = 4
+        print("已经找到metallic贴图，路径：" + str(value))
+    if key.lower() == "specular_texture":
+        socket = 5
+        print("已经找到specular贴图，路径：" + str(value))
+    if key.lower() == "roughness_texture":
         socket = 7
         print("已经找到roughness贴图，路径："+str(value))
     if key.lower() == "sheen_texture": socket = 10
@@ -1164,10 +1170,10 @@ def render_object(object_shape, params_rendering, params_camera, params_object_g
     #     if not os.path.exists(out_dir_v):
     #         os.makedirs(out_dir_v)
     camera_poses_set = np.load(os.path.join(working_dir, params_camera['camera_poses_path']))
-
     area_light_textures = np.loadtxt(os.path.join(working_dir, params_light['texture_paths_csv']), delimiter=',',dtype=str)
+
     for cidx , pose in enumerate(camera_poses_set):
-        if cidx>=10:
+        if cidx>=50:
             break
         out_dir_v = os.path.join(os.path.abspath(
             out_dir), "view_{:03d}".format(cidx + 1))

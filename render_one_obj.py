@@ -36,7 +36,6 @@ def renderMultiInput(shape_set,hdri_set,camera_poses_file,texture_name_set):
     ini['settings']['working_dir'] = para_dir
     ini['settings']['out_dir'] = output_base_dir
     createDir(output_base_dir)
-    ini['light']['energy'] = "20"
 
     # todo add area light texture path
     area_light_textures = np.loadtxt(os.path.join(para_dir, ini['light']['texture_paths_csv']), delimiter=',',dtype=str)
@@ -51,13 +50,7 @@ def renderMultiInput(shape_set,hdri_set,camera_poses_file,texture_name_set):
                 #load texture
                 ini['camera']['camera_poses_path'] = camera_poses_name
                 ini['rendering']['use_hdri'] = hdri_name
-                # ini['rendering']['use_hdri'] = "None"
-                ini['pbr_material']['color_texture'] = texture_name+"/"+texture_name+"_baseColor.tga"
-                ini['pbr_material']['metallic_texture']= texture_name+"/"+texture_name+"_metallic.tga"
-                ini['pbr_material']['specular_texture']= texture_name+"/"+texture_name+"_specular.tga"
-                ini['pbr_material']['roughness_texture']= texture_name+"/"+texture_name+"_roughness.tga"
-                ini['pbr_material']['normal_texture']= texture_name+"/"+texture_name+"_normal.png"
-
+                #ini['rendering']['use_hdri'] = "None"
                 # np.savetxt(camera_pose_file_name_i, camera_poses_path, delimiter=',')
                 filename_str = '{}_{}_{}'.format(shape_name,hdri_name,texture_name)
                 ini['settings']['filename_str'] = filename_str
@@ -70,7 +63,7 @@ if __name__ =='__main__':
     shape_set = ['18']
     hdri_set = ["hdri-54.hdr"]
     camera_poses_file = "NERO_camera.npy"
-    texture_name_set = ["Plastic-carbon_fiber_plain_weave"]
+    texture_name_set = ["final1"]
     
     renderMultiInput(shape_set,hdri_set,camera_poses_file,texture_name_set)
 
